@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 public class Window extends JFrame{
 	
 	private static JButton action1;
+	private static JButton action2;
 	private static JPanel mainContent = new JPanel();
 	private static outdoorFrame outdoor = new outdoorFrame();
 	private static indoorFrame indoor = new indoorFrame();
@@ -55,7 +56,7 @@ public class Window extends JFrame{
 		
 		JPanel mainBody = new JPanel();
 		
-		action1 = new JButton("Change Screen");
+		action1 = new JButton("Go Indoors");
 		action1.setPreferredSize(new Dimension(144,53));
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
@@ -63,12 +64,21 @@ public class Window extends JFrame{
 			}
 		});
 		
+		action2 = new JButton("Go outdoors");
+		action2.setPreferredSize(new Dimension(144,53));
+		action2.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+				repaintMainContent(outdoor);
+			}
+		});
+		
 		
 		mainBody.setPreferredSize(new Dimension(412, 251));
-		mainBody.setBackground(Color.ORANGE);
+//		mainBody.setBackground(Color.ORANGE);
 		mainBody.setLayout(new FlowLayout());
 		
 		mainBody.add(action1);
+		mainBody.add(action2);
 		
 		getContentPane().add(mainBody, BorderLayout.SOUTH);
 		
