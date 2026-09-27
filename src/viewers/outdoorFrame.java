@@ -72,7 +72,15 @@ public class outdoorFrame extends JPanel implements Runnable{
 	
 	public void endThread() {
 		isRunning = false;
-		gameThread.interrupt();
+		
+//		try {
+			
+			gameThread.interrupt();
+			
+//		} catch (InterruptedException e) {
+//			e.getStackTrace();
+//		}
+		
 	}
 
 	@Override
@@ -83,6 +91,7 @@ public class outdoorFrame extends JPanel implements Runnable{
 		
 		while(isRunning != false) {
 			
+			System.out.println("penis");
 			updatePos();
 			
 			repaint();

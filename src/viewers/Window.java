@@ -3,15 +3,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import Controls.ButtonsHandler;
 
 
 public class Window extends JFrame{
@@ -23,9 +23,12 @@ public class Window extends JFrame{
 	private static JPanel mainContent = new JPanel();
 	private static outdoorFrame outdoor = new outdoorFrame();
 	private static indoorFrame indoor = new indoorFrame();
+	private static bathroomFrame bathroom = new bathroomFrame();
 	
+	private static Image icon = new ImageIcon(Window.class.getResource("/sprites/icon.png")).getImage();
 	private static ImageIcon outdoorButton = new ImageIcon(Window.class.getResource("/buttons/Basket.png"));
 	private static ImageIcon foodButton = new ImageIcon(Window.class.getResource("/buttons/Eat.png"));
+	private static ImageIcon bathroomButton = new ImageIcon(Window.class.getResource("/buttons/Bath.png"));
 
 	public Window(){
 		
@@ -34,6 +37,8 @@ public class Window extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setLayout(new BorderLayout());
+		setIconImage(icon);
+		setLocationRelativeTo(null);
 		
 		setFocusable(false);
 		
@@ -71,7 +76,7 @@ public class Window extends JFrame{
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				outdoor.endThread();
-				repaintMainContent(indoor, outdoor);
+				repaintMainContent(indoor);
 			}
 		});
 		
@@ -81,9 +86,19 @@ public class Window extends JFrame{
 		action2.setFocusable(false);
 		action2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-				outdoor.startThread();
-				repaintMainContent(outdoor, indoor);
 				
+				int pane = JOptionPane.showConfirmDialog(null, "Are you sure you want to play?", "exit", JOptionPane.YES_NO_OPTION);
+				
+				switch(pane) {
+				
+					case 0:
+						outdoor.startThread();
+						repaintMainContent(outdoor);
+						break;
+					case 1:
+						return;
+				
+				}		
 			}
 		});
 		
@@ -92,8 +107,15 @@ public class Window extends JFrame{
 		action3.setPreferredSize(new Dimension(100,100));
 		
 		action4 = new JButton();
-		action4.setIcon(outdoorButton);
+		action4.setIcon(bathroomButton);
 		action4.setPreferredSize(new Dimension(100,100));
+		action4.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+				
+				repaintMainContent(bathroom);
+				
+			}
+		});
 		
 		mainBody.setPreferredSize(new Dimension(412, 251));
 		mainBody.setLayout(new FlowLayout());
@@ -101,14 +123,15 @@ public class Window extends JFrame{
 		mainBody.add(action1);
 		mainBody.add(action2);
 		mainBody.add(action3);
+		mainBody.add(action4);
 		
 		getContentPane().add(mainBody, BorderLayout.SOUTH);
 		
 	}
 	
-	private void repaintMainContent(JPanel panel, JPanel panel2) {
+	private void repaintMainContent(JPanel panel) {
 		
-		mainContent.remove(panel2);
+		mainContent.removeAll();
 		mainContent.repaint();
 		mainContent.revalidate();
 		
