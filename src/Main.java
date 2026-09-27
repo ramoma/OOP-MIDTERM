@@ -1,4 +1,6 @@
 import viewers.Window;
+import Controls.gameThread;
+import Controls.ButtonsHandler;
 
 
 public class Main {
@@ -8,6 +10,7 @@ public class Main {
 		
 		Window window = new Window();
 		
+	
 	}
 	
 }
