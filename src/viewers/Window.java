@@ -13,6 +13,8 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import Controls.statusHandler;
+
 
 public class Window extends JFrame{
 	
@@ -20,6 +22,8 @@ public class Window extends JFrame{
 	private static JButton action2;
 	private static JButton action3;
 	private static JButton action4;
+	private static JButton action5;
+	
 	private static JPanel mainContent = new JPanel();
 	private static outdoorFrame outdoor = new outdoorFrame();
 	private static indoorFrame indoor = new indoorFrame();
@@ -29,6 +33,12 @@ public class Window extends JFrame{
 	private static ImageIcon outdoorButton = new ImageIcon(Window.class.getResource("/buttons/Basket.png"));
 	private static ImageIcon foodButton = new ImageIcon(Window.class.getResource("/buttons/Eat.png"));
 	private static ImageIcon bathroomButton = new ImageIcon(Window.class.getResource("/buttons/Bath.png"));
+	private static ImageIcon sleepButton = new ImageIcon(Window.class.getResource("/buttons/Bed.png"));
+	
+	private static statusHandler statusH = new statusHandler();
+	
+	
+	
 
 	public Window(){
 		
@@ -39,6 +49,9 @@ public class Window extends JFrame{
 		setLayout(new BorderLayout());
 		setIconImage(icon);
 		setLocationRelativeTo(null);
+		
+		statusH.setStatus();
+		statusH.startHandler();
 		
 		setFocusable(false);
 		
@@ -69,16 +82,23 @@ public class Window extends JFrame{
 	private void createActionsMenu() {
 		
 		JPanel mainBody = new JPanel();
+		JPanel basketPanel = new JPanel();
+		JPanel bedPanel = new JPanel();
+		JPanel bathroomPanel = new JPanel();
+		JPanel foodPanel = new JPanel();
 		
 		action1 = new JButton("Go Indoors");
 		action1.setPreferredSize(new Dimension(144,53));
 		action1.setFocusable(false);
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-				outdoor.endThread();
+//				outdoor.endThread();
 				repaintMainContent(indoor);
 			}
 		});
+		
+		basketPanel.setPreferredSize(new Dimension(100,200));
+		basketPanel.setLayout(new FlowLayout());
 		
 		action2 = new JButton();
 		action2.setIcon(outdoorButton);
@@ -102,6 +122,10 @@ public class Window extends JFrame{
 			}
 		});
 		
+		basketPanel.add(action2);
+		basketPanel.add(statusH.getHappiness());
+		
+		
 		action3 = new JButton();
 		action3.setIcon(foodButton);
 		action3.setPreferredSize(new Dimension(100,100));
@@ -117,13 +141,35 @@ public class Window extends JFrame{
 			}
 		});
 		
+		action5 = new JButton();
+		action5.setIcon(sleepButton);
+		action5.setPreferredSize(new Dimension(100,100));
+		action5.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+				
+				if(indoor.checkIsSleeping()) {
+					
+					indoor.wakeSprite();
+					statusH.updateSleep(indoor.checkIsSleeping());
+					
+				} else {
+					
+					indoor.sleep();
+					statusH.updateSleep(indoor.checkIsSleeping());
+					
+				}
+				
+			}
+		});
+		
 		mainBody.setPreferredSize(new Dimension(412, 251));
 		mainBody.setLayout(new FlowLayout());
 		
 		mainBody.add(action1);
-		mainBody.add(action2);
+		mainBody.add(basketPanel);
 		mainBody.add(action3);
 		mainBody.add(action4);
+		mainBody.add(action5);
 		
 		getContentPane().add(mainBody, BorderLayout.SOUTH);
 		

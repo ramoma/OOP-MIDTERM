@@ -23,6 +23,8 @@ public class outdoorFrame extends JPanel implements Runnable{
 	private static int speed = 3;
 	private static int spriteX = 0;
 	private static int spriteY = 400;
+	private static int spriteBasketX = 0;
+	private static int spritebaseketY = 300;
 	private static ButtonsHandler handler = new ButtonsHandler();
 	
 	outdoorFrame(){
@@ -54,11 +56,11 @@ public class outdoorFrame extends JPanel implements Runnable{
 
 	public void updatePos() {
 		
-		if(handler.keyleft == true) {
+		if(handler.keyleft == true && spriteX > 0) {
 			
 			spriteX -= speed;
 			
-		} else if (handler.keyright == true) {
+		} else if (handler.keyright == true && spriteX < 412) {
 			spriteX += speed;
 		}
 		
@@ -91,7 +93,6 @@ public class outdoorFrame extends JPanel implements Runnable{
 		
 		while(isRunning != false) {
 			
-			System.out.println("penis");
 			updatePos();
 			
 			repaint();
