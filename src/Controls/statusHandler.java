@@ -33,11 +33,13 @@ public class statusHandler{
 	private static ImageIcon depletedBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/Low_.png"));
 	
 	public void startHandler(){
-//180000
-		timer = new Timer(3000, e ->depleteStats());
+		
+		//180000
+		timer = new Timer(5000, e ->depleteStats());
 		timer.start();
 		
 	}
+	
 	
 	public void setStatus() {
 		
@@ -57,7 +59,7 @@ public class statusHandler{
 		System.out.println("penis");
 		if(isAsleep) {
 			
-			sleepTimer = new Timer(180000, e-> {
+			sleepTimer = new Timer(3000, e-> {
 				energy = 100;
 			});
 			
@@ -70,15 +72,11 @@ public class statusHandler{
 		
 	}
 	
-	public boolean die() {
-		
-		if(timer != null) {
-			timer.stop();
-		}
-		
-		return false;
-		
-	}
+	public void updateClean(){clean = 100;}
+	
+	public void updatehunger(){ hunger = 100;}
+	
+	public static boolean checkIsAlive() { return isAlive; }
 	
 	public void depleteStats() {
 		
@@ -92,23 +90,24 @@ public class statusHandler{
 			spec2 = rand.nextInt(0,8);
 			spec3 = rand.nextInt(0,8);
 			
-			hunger -= spec1;
-			happiness -= spec;
-			energy -= spec3;
-			clean -= spec2;
-		
-			System.out.println(currentStateHappiness);
+			hunger = Math.max(0, hunger - spec1);
+			happiness = Math.max(0, happiness - spec);
+			energy = Math.max(0, energy - spec3);
+			clean = Math.max(0, clean - spec2);
+			
+			System.out.println("penits");
 			System.out.println(hunger);
 			System.out.println(happiness);
-			System.out.println(energy);
 			System.out.println(clean);
+			System.out.println(energy);
 			
 		} else {
 			
-			die();
+			isAlive = false;
 			
 		}
 	}
+	
 	public ImageIcon getIconFor(int value) {
 	    if (value >= 100)     return fullBar;
 	    else if (value >= 75) return quarterBar;
@@ -118,35 +117,8 @@ public class statusHandler{
 	}
 
 	public int getHappinessValue() { return happiness; }	
-//	public JLabel getHappiness() {
-//		
-//		System.out.println("pecker");
-//		
-//		JLabel panel = new JLabel();
-//		panel.setSize(100,50);
-//		
-//		if (happiness >= 90) {
-//			
-//			currentStateHappiness = fullBar;
-//
-//
-//		} else if(happiness >=75) {
-//			
-//			currentStateHappiness = quarterBar;
-//			
-//			
-//		}
-//		panel.setIcon(currentStateHappiness);
-//		
-//		return panel;
-//		
-//	}
-	
-	public void repaintLabels() {
-		
-		
-		
-	}
-	
+	public int getHungerValue() { return hunger; }
+	public int getEnergyValue() { return energy; }
+	public int getCleanValue() { return clean; }
 	
 }

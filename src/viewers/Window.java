@@ -77,8 +77,20 @@ public class Window extends JFrame{
 		
 		mainContent = new JPanel();
 		JPanel topBar = new JPanel();
+		topBar.setLayout(new FlowLayout());
 		
-		topBar.setPreferredSize(new Dimension(412, 46));
+		action1 = new JButton();
+		action1.setPreferredSize(new Dimension(46,46));
+		action1.setFocusable(false);
+		action1.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+//				outdoor.endThread();
+				repaintMainContent(indoor);
+			}
+		});
+		
+		topBar.setPreferredSize(new Dimension(412, 50));
+		topBar.add(action1);
 		
 		mainContent.setPreferredSize(new Dimension(412, 553));
 		mainContent.setBackground(Color.RED);
@@ -107,8 +119,8 @@ public class Window extends JFrame{
 		bathroomPanel.setLayout(new FlowLayout());
 		
 		JPanel foodPanel = new JPanel();
-		bathroomPanel.setPreferredSize(new Dimension(100,200));
-		bathroomPanel.setLayout(new FlowLayout());
+		foodPanel.setPreferredSize(new Dimension(100,200));
+		foodPanel.setLayout(new FlowLayout());
 		
 		happinessLabel = new JLabel();
 		happinessLabel.setPreferredSize(new Dimension(100, 50));
@@ -124,15 +136,15 @@ public class Window extends JFrame{
 		
 		refreshBars(); 
 		
-		action1 = new JButton("Go Indoors");
-		action1.setPreferredSize(new Dimension(144,53));
-		action1.setFocusable(false);
-		action1.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event) {
-//				outdoor.endThread();
-				repaintMainContent(indoor);
-			}
-		});
+//		action1 = new JButton();
+//		action1.setPreferredSize(new Dimension(90,90));
+//		action1.setFocusable(false);
+//		action1.addActionListener(new ActionListener(){
+//			public void actionPerformed(ActionEvent event) {
+////				outdoor.endThread();
+//				repaintMainContent(indoor);
+//			}
+//		});
 		
 		action2 = new JButton();
 		action2.setIcon(outdoorButton);
@@ -163,6 +175,16 @@ public class Window extends JFrame{
 		action3 = new JButton();
 		action3.setIcon(foodButton);
 		action3.setPreferredSize(new Dimension(100,100));
+		action3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				
+				indoor.eat();
+				
+			}
+		});
+		
+		foodPanel.add(action3);
+		foodPanel.add(hungerLabel);
 		
 //		soemething goes here and i am about to fucking kill myself 
 		
@@ -172,8 +194,9 @@ public class Window extends JFrame{
 		action4.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
-				repaintMainContent(bathroom);
-				
+				repaintMainContent(bathroom);	
+				bathroom.takeBath();
+
 			}
 		});
 		
@@ -209,7 +232,7 @@ public class Window extends JFrame{
 		
 //		mainBody.add(action1);
 		mainBody.add(basketPanel);
-		mainBody.add(action3);
+		mainBody.add(foodPanel);
 		mainBody.add(bathroomPanel);
 		mainBody.add(bedPanel);
 		
@@ -218,16 +241,35 @@ public class Window extends JFrame{
 	}
 	
 	private void refreshBars() {
+//		if(statusHandler.checkIsAlive()) {
+//			return;
+//		} else {
+//			
+//			spriteDie();
+//			
+//		}
+		
 	    happinessLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
-	    hungerLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
-	    energyLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
-	    cleanLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
-	    happinessLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	    hungerLabel.setIcon(statusH.getIconFor(statusH.getHungerValue()));
+	    energyLabel.setIcon(statusH.getIconFor(statusH.getEnergyValue()));
+	    cleanLabel.setIcon(statusH.getIconFor(statusH.getCleanValue()));
 	}
 
 	private void startRefreshTimer() {
+		
+		
+		
 	    refreshTimer = new Timer(3000, e -> refreshBars());
 	    refreshTimer.start();
+	}
+	
+	private void spriteDie() {
+		
+		System.out.println("sprite died");
+		String pane = JOptionPane.showInputDialog(null,"your sprite has died", JOptionPane.YES_OPTION);
+		
+		refreshTimer.stop();
+		
 	}
 	
 	private void repaintMainContent(JPanel panel) {
