@@ -17,7 +17,6 @@ public class indoorFrame extends JPanel{
 	private static Image sleepingSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/sleeping.png")).getImage();
 	private static Image background = new ImageIcon(outdoorFrame.class.getResource("/backgrounds/indoors.gif")).getImage();
 	private static JPanel lightOff = new JPanel();
-	private static statusHandler statusH = new statusHandler();
 	
 	private static boolean isSleeping = false;
 	

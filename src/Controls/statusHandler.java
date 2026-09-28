@@ -4,6 +4,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
+import viewers.Window;
 
 import java.util.Random;
 
@@ -19,7 +20,7 @@ public class statusHandler{
 	private static Timer timer;
 	private static Timer sleepTimer;
 	private static dbController db = new dbController();
-	
+		
 	private static ImageIcon currentStateHunger;
 	private static ImageIcon currentStateHappiness;
 	private static ImageIcon currentStateClean;
@@ -108,82 +109,42 @@ public class statusHandler{
 			
 		}
 	}
-	
-	
-	
-	public JLabel getHappiness() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
-
-		} else if(happiness <=75) {
-			
-			currentStateHappiness = quarterBar;
-			
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		return panel;
-		
-	}
-	
-	public JLabel getHunger() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
-
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		System.out.print(currentStateHappiness);
-		
-		return panel;
-		
+	public ImageIcon getIconFor(int value) {
+	    if (value >= 100)     return fullBar;
+	    else if (value >= 75) return quarterBar;
+	    else if (value >= 50) return halfBar;
+	    else if (value >= 30) return lowBar;
+	    else                  return depletedBar;
 	}
 
-	public JLabel getEnergy() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
+	public int getHappinessValue() { return happiness; }	
+//	public JLabel getHappiness() {
+//		
+//		System.out.println("pecker");
+//		
+//		JLabel panel = new JLabel();
+//		panel.setSize(100,50);
+//		
+//		if (happiness >= 90) {
+//			
+//			currentStateHappiness = fullBar;
+//
+//
+//		} else if(happiness >=75) {
+//			
+//			currentStateHappiness = quarterBar;
+//			
+//			
+//		}
+//		panel.setIcon(currentStateHappiness);
+//		
+//		return panel;
+//		
+//	}
 	
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		return panel;
-		
-	}
-
-	public JLabel getClean() {
+	public void repaintLabels() {
 		
 		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
-	
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		System.out.print(currentStateHappiness);
-		
-		return panel;
 		
 	}
 	

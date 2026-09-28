@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JLabel;
 
 import java.awt.Dimension;
 import java.awt.Color;
@@ -12,6 +13,8 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
 
 import Controls.statusHandler;
 
@@ -28,6 +31,7 @@ public class Window extends JFrame{
 	private static outdoorFrame outdoor = new outdoorFrame();
 	private static indoorFrame indoor = new indoorFrame();
 	private static bathroomFrame bathroom = new bathroomFrame();
+	private static JPanel mainBody = new JPanel();
 	
 	private static Image icon = new ImageIcon(Window.class.getResource("/sprites/icon.png")).getImage();
 	private static ImageIcon outdoorButton = new ImageIcon(Window.class.getResource("/buttons/Basket.png"));
@@ -35,7 +39,13 @@ public class Window extends JFrame{
 	private static ImageIcon bathroomButton = new ImageIcon(Window.class.getResource("/buttons/Bath.png"));
 	private static ImageIcon sleepButton = new ImageIcon(Window.class.getResource("/buttons/Bed.png"));
 	
+	private JLabel happinessLabel;
+	private JLabel hungerLabel;
+	private JLabel energyLabel;
+	private JLabel cleanLabel;
+	
 	private static statusHandler statusH = new statusHandler();
+	private static Timer refreshTimer;
 	
 	
 	
@@ -52,6 +62,7 @@ public class Window extends JFrame{
 		
 		statusH.setStatus();
 		statusH.startHandler();
+		startRefreshTimer();
 		
 		setFocusable(false);
 		
@@ -81,11 +92,37 @@ public class Window extends JFrame{
 	
 	private void createActionsMenu() {
 		
-		JPanel mainBody = new JPanel();
+		mainBody = new JPanel();
+	
 		JPanel basketPanel = new JPanel();
+		basketPanel.setPreferredSize(new Dimension(100,200));
+		basketPanel.setLayout(new FlowLayout());
+		
 		JPanel bedPanel = new JPanel();
+		bedPanel.setPreferredSize(new Dimension(100,200));
+		bedPanel.setLayout(new FlowLayout());
+		
 		JPanel bathroomPanel = new JPanel();
+		bathroomPanel.setPreferredSize(new Dimension(100,200));
+		bathroomPanel.setLayout(new FlowLayout());
+		
 		JPanel foodPanel = new JPanel();
+		bathroomPanel.setPreferredSize(new Dimension(100,200));
+		bathroomPanel.setLayout(new FlowLayout());
+		
+		happinessLabel = new JLabel();
+		happinessLabel.setPreferredSize(new Dimension(100, 50));
+		
+		hungerLabel = new JLabel();
+		hungerLabel.setPreferredSize(new Dimension(100, 50));
+		
+		energyLabel = new JLabel();
+		energyLabel.setPreferredSize(new Dimension(100, 50));
+		
+		cleanLabel = new JLabel();
+		cleanLabel.setPreferredSize(new Dimension(100, 50));
+		
+		refreshBars(); 
 		
 		action1 = new JButton("Go Indoors");
 		action1.setPreferredSize(new Dimension(144,53));
@@ -96,9 +133,6 @@ public class Window extends JFrame{
 				repaintMainContent(indoor);
 			}
 		});
-		
-		basketPanel.setPreferredSize(new Dimension(100,200));
-		basketPanel.setLayout(new FlowLayout());
 		
 		action2 = new JButton();
 		action2.setIcon(outdoorButton);
@@ -123,12 +157,14 @@ public class Window extends JFrame{
 		});
 		
 		basketPanel.add(action2);
-		basketPanel.add(statusH.getHappiness());
+		basketPanel.add(happinessLabel);
 		
 		
 		action3 = new JButton();
 		action3.setIcon(foodButton);
 		action3.setPreferredSize(new Dimension(100,100));
+		
+//		soemething goes here and i am about to fucking kill myself 
 		
 		action4 = new JButton();
 		action4.setIcon(bathroomButton);
@@ -140,6 +176,9 @@ public class Window extends JFrame{
 				
 			}
 		});
+		
+		bathroomPanel.add(action4);
+		bathroomPanel.add(cleanLabel);
 		
 		action5 = new JButton();
 		action5.setIcon(sleepButton);
@@ -162,17 +201,33 @@ public class Window extends JFrame{
 			}
 		});
 		
+		bedPanel.add(action5);
+		bedPanel.add(energyLabel);
+		
 		mainBody.setPreferredSize(new Dimension(412, 251));
 		mainBody.setLayout(new FlowLayout());
 		
-		mainBody.add(action1);
+//		mainBody.add(action1);
 		mainBody.add(basketPanel);
 		mainBody.add(action3);
-		mainBody.add(action4);
-		mainBody.add(action5);
+		mainBody.add(bathroomPanel);
+		mainBody.add(bedPanel);
 		
 		getContentPane().add(mainBody, BorderLayout.SOUTH);
 		
+	}
+	
+	private void refreshBars() {
+	    happinessLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	    hungerLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	    energyLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	    cleanLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	    happinessLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
+	}
+
+	private void startRefreshTimer() {
+	    refreshTimer = new Timer(3000, e -> refreshBars());
+	    refreshTimer.start();
 	}
 	
 	private void repaintMainContent(JPanel panel) {
