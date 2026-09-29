@@ -31,7 +31,7 @@ public class indoorFrame extends JPanel{
 	private static boolean isSleeping = false;
 	private static boolean isEating = false;
 	
-	indoorFrame(){
+	public indoorFrame(){
 		
 		setLayout(null);
 		
@@ -45,7 +45,7 @@ public class indoorFrame extends JPanel{
 		isEating = true;
 		
 		eatTimer = new Timer(3000, e ->{
-			statusH.updatehunger();
+
 			isEating = false;
 		});
 		eatTimer.setRepeats(false);
@@ -60,6 +60,8 @@ public class indoorFrame extends JPanel{
 		lightOff.setBackground(new Color(0f,0f,0f,.5f));
 		
 		add(lightOff);
+		revalidate();
+		repaint();
 		
 	}
 	
@@ -71,6 +73,8 @@ public class indoorFrame extends JPanel{
 	}
 	
 	public boolean checkIsSleeping() {return isSleeping;}
+	
+	public boolean checkIsEating() {return isEating;}
 	
 	public void reDraw(JPanel panel) {
 		

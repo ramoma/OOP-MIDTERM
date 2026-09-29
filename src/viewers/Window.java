@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import Controls.dbController;
 import Controls.statusHandler;
 
 
@@ -26,6 +27,8 @@ public class Window extends JFrame{
 	private static JButton action3;
 	private static JButton action4;
 	private static JButton action5;
+	
+	private static JButton save;
 	
 	private static JPanel mainContent = new JPanel();
 	private static outdoorFrame outdoor = new outdoorFrame();
@@ -38,6 +41,8 @@ public class Window extends JFrame{
 	private static ImageIcon foodButton = new ImageIcon(Window.class.getResource("/buttons/Eat.png"));
 	private static ImageIcon bathroomButton = new ImageIcon(Window.class.getResource("/buttons/Bath.png"));
 	private static ImageIcon sleepButton = new ImageIcon(Window.class.getResource("/buttons/Bed.png"));
+	private static ImageIcon backButton = new  ImageIcon(Window.class.getResource("/buttons/back_button.png"));
+	private static ImageIcon saveButton = new  ImageIcon(Window.class.getResource("/buttons/save_button.png"));
 	
 	private JLabel happinessLabel;
 	private JLabel hungerLabel;
@@ -46,9 +51,6 @@ public class Window extends JFrame{
 	
 	private static statusHandler statusH = new statusHandler();
 	private static Timer refreshTimer;
-	
-	
-	
 
 	public Window(){
 		
@@ -77,20 +79,41 @@ public class Window extends JFrame{
 		
 		mainContent = new JPanel();
 		JPanel topBar = new JPanel();
-		topBar.setLayout(new FlowLayout());
+		topBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		action1 = new JButton();
 		action1.setPreferredSize(new Dimension(46,46));
+		action1.setIcon(backButton);
 		action1.setFocusable(false);
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
-//				outdoor.endThread();
+				
+				if(outdoor.getThread() != null) {
+					
+					outdoor.endThread();
+				}
+				
 				repaintMainContent(indoor);
 			}
 		});
 		
-		topBar.setPreferredSize(new Dimension(412, 50));
+		save = new JButton();
+		save.setPreferredSize(new Dimension(46,46));
+		save.setIcon(saveButton);
+		save.setFocusable(false);
+		save.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent event) {
+				
+				dbController.updateSprite(statusH.getHungerValue(),statusH.getHappinessValue(),statusH.getEnergyValue(),statusH.getCleanValue());
+				dispose();
+				
+			}
+		});
+		
+		
+		topBar.setPreferredSize(new Dimension(412, 60));
 		topBar.add(action1);
+		topBar.add(save);
 		
 		mainContent.setPreferredSize(new Dimension(412, 553));
 		mainContent.setBackground(Color.RED);
@@ -136,35 +159,16 @@ public class Window extends JFrame{
 		
 		refreshBars(); 
 		
-//		action1 = new JButton();
-//		action1.setPreferredSize(new Dimension(90,90));
-//		action1.setFocusable(false);
-//		action1.addActionListener(new ActionListener(){
-//			public void actionPerformed(ActionEvent event) {
-////				outdoor.endThread();
-//				repaintMainContent(indoor);
-//			}
-//		});
-		
 		action2 = new JButton();
 		action2.setIcon(outdoorButton);
 		action2.setPreferredSize(new Dimension(100,100));
 		action2.setFocusable(false);
 		action2.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {		
 				
-				int pane = JOptionPane.showConfirmDialog(null, "Are you sure you want to play?", "exit", JOptionPane.YES_NO_OPTION);
-				
-				switch(pane) {
-				
-					case 0:
 						outdoor.startThread();
 						repaintMainContent(outdoor);
-						break;
-					case 1:
-						return;
-				
-				}		
+					
 			}
 		});
 		
@@ -177,9 +181,13 @@ public class Window extends JFrame{
 		action3.setPreferredSize(new Dimension(100,100));
 		action3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				
-				indoor.eat();
-				
+	
+				if(statusH.checkCurrentStatus(1)) {
+					repaintMainContent(indoor);
+					indoor.eat();
+					statusHandler.updatehunger();
+					
+				}	
 			}
 		});
 		
@@ -209,16 +217,17 @@ public class Window extends JFrame{
 		action5.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
+				statusH.updateSleep();
 				if(indoor.checkIsSleeping()) {
 					
 					indoor.wakeSprite();
-					statusH.updateSleep(indoor.checkIsSleeping());
-					
+//					statusH.updateSleep(indoor.checkIsSleeping());
+//					
 				} else {
 					
 					indoor.sleep();
-					statusH.updateSleep(indoor.checkIsSleeping());
-					
+//					statusH.updateSleep(indoor.checkIsSleeping());
+//					
 				}
 				
 			}

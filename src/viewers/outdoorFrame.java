@@ -14,6 +14,8 @@ import Controls.*;
 
 
 public class outdoorFrame extends JPanel implements Runnable{
+	
+	
 	private static Thread gameThread;
 	private static Image background = new ImageIcon(outdoorFrame.class.getResource("/backgrounds/outdoors.gif")).getImage();
 	private static Image sprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/idle.gif")).getImage();
@@ -26,6 +28,8 @@ public class outdoorFrame extends JPanel implements Runnable{
 	private static int spriteBasketX = 0;
 	private static int spritebaseketY = 300;
 	private static ButtonsHandler handler = new ButtonsHandler();
+	
+	
 	
 	outdoorFrame(){
 		
@@ -42,7 +46,7 @@ public class outdoorFrame extends JPanel implements Runnable{
 		addKeyListener(handler);
 	}
 	
-	
+	public Thread getThread() {return gameThread;}
 	
 	public void paintComponent(Graphics g) {
 		

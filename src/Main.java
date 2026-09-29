@@ -1,17 +1,27 @@
 import viewers.Window;
-import viewers.gameOver;
+import viewers.popupFrame;
 
 import Controls.dbController;
 
 import javax.swing.JOptionPane;
 
 
+
 public class Main {
+	
+	private static dbController db = new dbController();
 	
 	public static void main(String[] args) {
 		
-		dbController db = new dbController();
-//		gameOver window2 = new gameOver();
+		
+//		popupFrame window2 = new popupFrame();
+		
+		initSprite();
+		
+	}
+	
+	private static void initSprite() {
+		
 		if(db.checkChar()) {
 			
 			Window window = new Window();
@@ -29,6 +39,7 @@ public class Main {
 			
 			Window window = new Window();
 		}
+		
 	}
 	
 }

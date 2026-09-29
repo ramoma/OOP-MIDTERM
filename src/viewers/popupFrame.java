@@ -12,19 +12,21 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-public class gameOver extends JFrame{
+public class popupFrame extends JFrame{
 	
-	private static Image background = new ImageIcon(gameOver.class.getResource("/backgrounds/gameOver.png")).getImage();
-	private static JPanel panel = new JPanel();
+	private static boolean isSaving;
 	
-	public gameOver(){
+	private static Image background = new ImageIcon(popupFrame.class.getResource("/backgrounds/gameOver.png")).getImage();
+	private static JPanel diePanel = new JPanel();
+	
+	public popupFrame(){
 		
 		setSize(553,553);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
-		setVisible(true);
 	
 	}
+	
 	
 }

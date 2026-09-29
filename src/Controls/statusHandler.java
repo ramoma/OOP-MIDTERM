@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.Timer;
 
 import viewers.Window;
+import viewers.indoorFrame;
 
 import java.util.Random;
 
@@ -12,19 +13,23 @@ import java.util.Random;
 public class statusHandler{
 	
 	private static boolean isAlive = true;
-	private static boolean isAsleep = false;
+	private static boolean isSleeping = false;
+	private static boolean isEating = false;
+	private static boolean isBathing = false;
+	private static boolean statusValid;
+	
 	private static int hunger;
 	private static int happiness;
 	private static int energy;
 	private static int clean;
+	
 	private static Timer timer;
+	private static Timer batheTimer;
 	private static Timer sleepTimer;
+	private static Timer eatTimer;
+	
 	private static dbController db = new dbController();
-		
-	private static ImageIcon currentStateHunger;
-	private static ImageIcon currentStateHappiness;
-	private static ImageIcon currentStateClean;
-	private static ImageIcon currentStateEnergy;
+	private static indoorFrame indoor = new indoorFrame();
 	
 	private static ImageIcon fullBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/100_.png"));
 	private static ImageIcon quarterBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/75_.png"));
@@ -40,6 +45,54 @@ public class statusHandler{
 		
 	}
 	
+	public boolean checkCurrentStatus(int action) {
+		
+		
+		switch(action) {
+		
+			case 1:
+				if(isSleeping || isBathing) {
+					
+					System.out.println("cannot eat");
+					
+				} else {
+					
+					System.out.println("is eating");
+					isEating = true;
+					statusValid =  isEating;
+				}
+				break;
+			case 2:
+				if(isBathing || isEating) {
+					
+					System.out.print("cannot sleep");
+					
+				} else {
+				
+					System.out.print("is sleeping");
+					statusValid = isSleeping;
+					
+				}
+				break;
+				
+			case 3:
+				if(isEating || isSleeping) {
+					
+					System.out.print("cannot bathe");
+					
+				} else {
+					
+					System.out.print("bathing");
+					
+				}
+		
+		}
+		
+		return statusValid;
+		
+	}
+	
+	private static void unsetValid() {statusValid = false;}
 	
 	public void setStatus() {
 		
@@ -54,27 +107,58 @@ public class statusHandler{
 		
 	}
 	
-	public void updateSleep(boolean isAsleep){
+	public void updateSleep(){
 		
-		System.out.println("penis");
-		if(isAsleep) {
+		isSleeping = true;
+		
+		if(indoor.checkIsSleeping()) {
+			
+			isSleeping = false;
+			sleepTimer.stop();
+			System.out.print("sleep interrupted");
+			unsetValid();
+			
+		} else {
 			
 			sleepTimer = new Timer(3000, e-> {
 				energy = 100;
+				isSleeping = false;
 			});
 			
-			sleepTimer.start();			
-		} else {
-			
-			sleepTimer.stop();
+			sleepTimer.start();		
+			unsetValid();
 			
 		}
-		
 	}
 	
-	public void updateClean(){clean = 100;}
+	public void updateClean(){
+		
+		isBathing = true;
+		batheTimer = new Timer(3000, e ->{
+			
+			clean = 100;
+			isBathing = false;
+			
+		});
+		batheTimer.setRepeats(false);
+		batheTimer.start();
+		
+		
 	
-	public void updatehunger(){ hunger = 100;}
+	}
+	
+	public static void updatehunger(){ 
+
+		eatTimer = new Timer(3000, e ->{
+
+			isEating = false;
+			
+		});
+		eatTimer.start();
+		hunger = 100;
+		eatTimer.stop();
+		
+	}
 	
 	public static boolean checkIsAlive() { return isAlive; }
 	

@@ -15,7 +15,7 @@ public class dbController {
 	
 	private static int[] stats = new int[4];
 
-	String dbUrl = "jdbc:sqlite:valuesStorage/values";
+	private static String dbUrl = "jdbc:sqlite:valuesStorage/values";
 	
 	public boolean checkChar() {
 		
@@ -109,13 +109,13 @@ public class dbController {
 		}
 	}
 	
-	public void updateSprite(int hunger, int happiness, int energy, int clean) {
+	public static void updateSprite(int hunger, int happiness, int energy, int clean) {
 		
 try {
 			
 			Connection db = DriverManager.getConnection(dbUrl);
 			
-			PreparedStatement stmt = db.prepareStatement("insert into spriteValues(hunger, happiness, energy, clean) values(?,?,?,?)");
+			PreparedStatement stmt = db.prepareStatement("update spriteValues set hunger = ?, happiness = ?, energy = ?, clean = ?");
 			
 			stmt.setInt(1, hunger);
 			stmt.setInt(2, happiness);
