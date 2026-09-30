@@ -61,7 +61,7 @@ public class gameOver extends JFrame{
 		
 		saveButton = new JButton();
 		saveButton.setFocusable(false);
-		saveButton.setPreferredSize(new Dimension(300,300));
+		saveButton.setPreferredSize(new Dimension(180,100));
 		saveButton.setBackground(new Color(0f,0f,0f,0f));
 		saveButton.setIcon(yesButton);
 		saveButton.setBorder(null);
@@ -71,6 +71,7 @@ public class gameOver extends JFrame{
 				
 				statusH.setReset();
 				dispose();
+
 				
 			}
 			
@@ -81,7 +82,7 @@ public class gameOver extends JFrame{
 		buttonsPanel.setBackground(new Color(0f,0f,0f,0f));
 		
 		buttonsPanel.add(saveButton);
-		buttonsPanel.setBounds(130,310,300,300);
+		buttonsPanel.setBounds(130,410,300,300);
 		
 		panel.setLayout(null);
 		panel.add(buttonsPanel);
