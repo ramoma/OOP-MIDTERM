@@ -107,7 +107,7 @@ public class outdoorFrame extends JPanel implements Runnable{
 	
 	public void endThread() {
 		isRunning = false;
-			
+		statusH.unsetPlaying();
 		gameThread.interrupt();
 		
 	}

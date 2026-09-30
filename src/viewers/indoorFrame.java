@@ -18,6 +18,9 @@ public class indoorFrame extends JPanel{
 	private static Image awakeSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/idle.gif")).getImage();
 	private static Image sleepingSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/sleeping.png")).getImage();
 	private static Image happySprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/happy.png")).getImage();
+	private static Image deadSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/dead.png")).getImage();
+	
+	private static boolean isAlive = true;
 	
 	private static Image background = new ImageIcon(outdoorFrame.class.getResource("/backgrounds/indoors.gif")).getImage();
 	private static Image bread = new ImageIcon(outdoorFrame.class.getResource("/sprites/food/bread.png")).getImage();
@@ -72,6 +75,8 @@ public class indoorFrame extends JPanel{
 		
 	}
 	
+	public void killSprite() {isAlive = false;}
+	
 	public boolean checkIsSleeping() {return isSleeping;}
 	
 	public boolean checkIsEating() {return isEating;}
@@ -99,6 +104,10 @@ public class indoorFrame extends JPanel{
 
 			g2D.drawImage(happySprite, 50,400,this);
 			g2D.drawImage(bread, 160,400,this);
+			
+		} else if (!isAlive) {
+			
+			g2D.drawImage(deadSprite, 50,400,this);
 			
 		}
 		

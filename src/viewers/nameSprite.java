@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -14,21 +15,25 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import Controls.dbController;
 import Controls.statusHandler;
 
-public class popupFrame extends JFrame{
+public class nameSprite extends JFrame{
 	
-	private static Image background = new ImageIcon(gameOver.class.getResource("/backgrounds/save.png")).getImage();
+	private static Image background = new ImageIcon(gameOver.class.getResource("/backgrounds/name.png")).getImage();
 	private static ImageIcon yesButton = new ImageIcon(gameOver.class.getResource("/buttons/yes.png"));
 	private static ImageIcon noButton = new ImageIcon(gameOver.class.getResource("/buttons/no.png"));
 	
 	private static JButton saveButton;
 	private static JButton cancelButton;
 	
-	private static boolean Restart;
+	private static String spriteName;
+	
+	private boolean isNamed = false;
+	
 	private static statusHandler statusH = new statusHandler(); 
 	private static dbController db = new dbController();
 	
@@ -49,7 +54,7 @@ public class popupFrame extends JFrame{
 	};
 	
 	
-	popupFrame(){
+	public nameSprite(){
 		
 		setSize(533,533);
 		setUndecorated(true);
@@ -57,10 +62,16 @@ public class popupFrame extends JFrame{
 		
 		drawButtons();
 		setVisible(true);
+		
+		
 	}
 		
 	private void drawButtons() {
 		
+		JTextArea name = new JTextArea();
+		name.setBounds(100,200,300,80);
+		name.setFont(new Font("MV Boli", Font.BOLD, 50));
+
 		saveButton = new JButton();
 		saveButton.setFocusable(false);
 		saveButton.setPreferredSize(new Dimension(100,100));
@@ -70,9 +81,22 @@ public class popupFrame extends JFrame{
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				db.updateSprite(statusH.getHungerValue(),statusH.getHappinessValue(),statusH.getEnergyValue(),statusH.getCleanValue());
-				statusH.setReset();
-				dispose();
+				spriteName = name.getText();
+				if(spriteName.isEmpty()) {
+					
+					System.out.print("nrowmn");
+					System.out.print(spriteName);
+
+					
+				} else {
+					
+					isNamed = true;
+					System.out.print(spriteName);
+					db.initSprite(spriteName);
+					dispose();
+					
+				}
+					
 				
 			}
 		});
@@ -87,9 +111,7 @@ public class popupFrame extends JFrame{
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				db.killSprite();
-				statusH.setReset();
-				dispose();
+				name.setText(null);
 			}
 		});
 		cancelButton.setIcon(noButton);
@@ -104,12 +126,16 @@ public class popupFrame extends JFrame{
 		buttonsPanel.add(cancelButton);
 		
 		panel.setLayout(null);
-		buttonsPanel.setBounds(150,350, 230,100);
+		buttonsPanel.setBounds(150,390, 230,100);
+		
+		panel.add(name);
 		panel.add(buttonsPanel);
 		
 		add(panel);
 		
 	}
+	
+	public boolean returnSprite() {return isNamed;}
 	
 	
 }

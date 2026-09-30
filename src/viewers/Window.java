@@ -2,9 +2,11 @@ package viewers;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
+import javax.swing.JDialog;
 
 import java.awt.Dimension;
 import java.awt.Color;
@@ -36,6 +38,11 @@ public class Window extends JFrame{
 	private static bathroomFrame bathroom = new bathroomFrame();
 	private static JPanel mainBody = new JPanel();
 	
+	private static JDialog dialog;
+	private static JDialog deadDialog;
+	private static gameOver popUP;
+	private static popupFrame frame;
+	
 	private static Image icon = new ImageIcon(Window.class.getResource("/sprites/icon.png")).getImage();
 	private static ImageIcon outdoorButton = new ImageIcon(Window.class.getResource("/buttons/Basket.png"));
 	private static ImageIcon foodButton = new ImageIcon(Window.class.getResource("/buttons/Eat.png"));
@@ -61,9 +68,11 @@ public class Window extends JFrame{
 		setLayout(new BorderLayout());
 		setIconImage(icon);
 		setLocationRelativeTo(null);
+		setUndecorated(true);
 		
 		statusH.setStatus();
 		statusH.startHandler();
+		
 		startRefreshTimer();
 		
 		setFocusable(false);
@@ -88,6 +97,7 @@ public class Window extends JFrame{
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
+				statusH.unsetPlaying();
 				if(outdoor.getThread() != null) {
 					
 					outdoor.endThread();
@@ -104,8 +114,11 @@ public class Window extends JFrame{
 		save.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
-				dbController.updateSprite(statusH.getHungerValue(),statusH.getHappinessValue(),statusH.getEnergyValue(),statusH.getCleanValue());
-				dispose();
+				
+				frame = new popupFrame();
+				dialog = new JDialog(frame);
+				
+				dialog.setVisible(true);
 				
 			}
 		});
@@ -166,8 +179,9 @@ public class Window extends JFrame{
 		action2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {		
 				
-						outdoor.startThread();
-						repaintMainContent(outdoor);
+				statusH.getValid(4);
+				outdoor.startThread();
+				repaintMainContent(outdoor);
 					
 			}
 		});
@@ -182,7 +196,7 @@ public class Window extends JFrame{
 		action3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 	
-				if(statusH.checkCurrentStatus(1)) {
+				if(statusH.getValid(1)) {
 					repaintMainContent(indoor);
 					indoor.eat();
 					statusHandler.updatehunger();
@@ -203,9 +217,10 @@ public class Window extends JFrame{
 			public void actionPerformed(ActionEvent event) {
 				
 				
-				if(statusH.checkCurrentStatus(3)) {
+				if(statusH.getValid(3)) {
 					repaintMainContent(bathroom);	
 					bathroom.takeBath();
+					statusH.updateClean();
 				}
 				
 
@@ -220,20 +235,21 @@ public class Window extends JFrame{
 		action5.setPreferredSize(new Dimension(100,100));
 		action5.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
+
+				if(statusH.getValid(2) && statusH.checkIsAlive()) {
+					if(indoor.checkIsSleeping()) {
+						
+						indoor.wakeSprite();
+						statusH.InterruptSleep();
 				
-				statusH.updateSleep();
-				statusH.checkCurrentStatus(2);
-				if(indoor.checkIsSleeping()) {
-					
-					indoor.wakeSprite();
-//					statusH.updateSleep(indoor.checkIsSleeping());
-//					
-				} else {
-					
-					indoor.sleep();
-//					statusH.updateSleep(indoor.checkIsSleeping());
-//					
+					} else {
+						repaintMainContent(indoor);
+						indoor.sleep();
+						statusH.updateSleep();
+				
+					}
 				}
+					
 				
 			}
 		});
@@ -261,17 +277,13 @@ public class Window extends JFrame{
 	    energyLabel.setIcon(statusH.getIconFor(statusH.getEnergyValue()));
 	    cleanLabel.setIcon(statusH.getIconFor(statusH.getCleanValue()));
 		
-		if(statusHandler.checkIsAlive()) {
-			return;
-		} else {
-			
+		if(!statusH.checkIsAlive()) {
 			spriteDie();
-			
 		}
-	    
+		
+		checkReset();	    
 	    
 	}
-	
 	
 
 	private void startRefreshTimer() {
@@ -280,10 +292,21 @@ public class Window extends JFrame{
 	    refreshTimer.start();
 	}
 	
+	private void checkReset() {
+		
+		if(statusH.getReset()) {
+			dispose();
+		}
+		
+	}
+	
 	private void spriteDie() {
 		
 		System.out.println("sprite died");
-		String pane = JOptionPane.showInputDialog(null,"your sprite has died", JOptionPane.YES_OPTION);
+		
+		dbController.killSprite();
+		
+		popUP = new gameOver();
 		
 		refreshTimer.stop();
 		

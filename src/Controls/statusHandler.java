@@ -2,10 +2,12 @@ package Controls;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 import viewers.Window;
 import viewers.indoorFrame;
+import viewers.nameSprite;
 
 import java.util.Random;
 
@@ -13,10 +15,12 @@ import java.util.Random;
 public class statusHandler{
 	
 	private static boolean isAlive = true;
-	private static boolean isSleeping = false;
-	private static boolean isEating = false;
-	private static boolean isBathing = false;
-	private static boolean statusValid;
+	private static boolean isSleeping = true;
+	private static boolean isEating = true;
+	private static boolean isBathing = true;
+	private static boolean isPlaying = true;
+	private static boolean action;
+	private static boolean reset;
 	
 	private static int hunger;
 	private static int happiness;
@@ -29,7 +33,9 @@ public class statusHandler{
 	private static Timer eatTimer;
 	
 	private static dbController db = new dbController();
-	private static indoorFrame indoor = new indoorFrame();
+	
+//	private static nameSprite name;
+
 	
 	private static ImageIcon fullBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/100_.png"));
 	private static ImageIcon quarterBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/75_.png"));
@@ -45,56 +51,40 @@ public class statusHandler{
 		
 	}
 	
-	public boolean checkCurrentStatus(int action) {
+	public boolean getValid(int stat) {
 		
-		
-		switch(action) {
+		switch(stat) {
 		
 			case 1:
-				if(isSleeping || isBathing) {
-					
-					System.out.println("cannot eat");
-					
-				} else {
-					
-					System.out.println("is eating");
-					isEating = true;
-					statusValid =  isEating;
-				}
+				System.out.print(isSleeping);
+				System.out.print(isBathing);
+				
+				action = isEating;
 				break;
 			case 2:
-				if(isBathing || isEating) {
-					
-					System.out.print("cannot sleep");
-					
-				} else {
-				
-					System.out.print("is sleeping");
-					isSleeping = true;
-					statusValid = isSleeping;
-					
-				}
+				System.out.print(isEating);
+				System.out.print(isBathing);
+				action = isSleeping;
+				break;
+			case 3:
+				System.out.print(isSleeping);
+				System.out.print(isEating);
+				action = isBathing;
 				break;
 				
-			case 3:
-				if(isEating || isSleeping) {
-					
-					System.out.print("cannot bathe");
-					
-				} else {
-					isBathing = true;
-					statusValid = isBathing;
-					System.out.print("bathing");
-					
-				}
+			case 4:
+				isBathing = false;
+				isEating = false;
+				isSleeping = false;
+				
+				action = isPlaying;
+				break;
 		
 		}
 		
-		return statusValid;
+		return action;
 		
 	}
-	
-	private static void unsetValid() {statusValid = false;}
 	
 	public void setStatus() {
 		
@@ -111,53 +101,75 @@ public class statusHandler{
 	
 	public void updateSleep(){
 		
-		isSleeping = true;
-		
-		if(indoor.checkIsSleeping()) {
+		if(isSleeping) {
 			
-			isSleeping = false;
-			sleepTimer.stop();
-			System.out.print("sleep interrupted");
-			unsetValid();
-			
-		} else {
+			isBathing = false;
+			isEating = false;
 			
 			sleepTimer = new Timer(3000, e-> {
+				
 				energy = 100;
-				isSleeping = false;
+				
+				isBathing = true;
+				isEating = true;
+				
 			});
 			
-			sleepTimer.start();		
-			unsetValid();
+			sleepTimer.setRepeats(false);
+			sleepTimer.start();	
 			
 		}
+				
+	}
+	
+	public void InterruptSleep() {
+		
+		sleepTimer.stop();
+		isBathing = true;
+		isEating = true;
+		
 	}
 	
 	public void updateClean(){
 		
-		batheTimer = new Timer(3000, e ->{
-			
-			clean = 100;
-			isBathing = false;
-			
-		});
-		batheTimer.setRepeats(false);
-		batheTimer.start();
 		
-		
-	
+		if(isBathing) {
+			isEating = false;
+			isSleeping = false;
+			
+			batheTimer = new Timer(3000, e ->{
+				
+				clean = 100;
+				isEating = true;
+				isSleeping = true;
+				
+			});
+			batheTimer.setRepeats(false);
+			batheTimer.start();
+		}
 	}
 	
 	public static void updatehunger(){ 
 
-		eatTimer = new Timer(3000, e ->{
-
-			isEating = false;
+		if(isEating) {
 			
-		});
-		eatTimer.start();
-		hunger = 100;
-		eatTimer.stop();
+			isBathing = false;
+			isSleeping = false;
+			
+			eatTimer = new Timer(3000, e ->{
+				
+				hunger = 100;
+				isBathing = true;
+				isSleeping = true;
+				
+			});
+			
+			eatTimer.start();
+			eatTimer.setRepeats(false);
+//			eatTimer.stop();
+			
+		}
+			
 		
 	}
 	
@@ -200,6 +212,40 @@ public class statusHandler{
 			
 		}
 	}
+	
+	public static void initSprite() {
+		
+		if(db.checkChar()) {
+			
+			Window window = new Window();
+			
+		} else {
+			nameSprite name = new nameSprite();
+			
+			while(!name.returnSprite()) {
+				if(name.returnSprite()) {
+					continue;
+				} else {
+					System.out.print("empty");
+				}
+			}
+				
+			
+			Window window = new Window();
+		}
+		
+	}
+	
+	public void unsetPlaying() {
+		isBathing = true;
+		isEating = true;
+		isSleeping = true;
+	}
+	
+	public void setReset() {reset = true;}
+	public boolean getReset() {return reset;}
+	public void unsetReset() {reset = false;}
+	
 	
 	public ImageIcon getIconFor(int value) {
 	    if (value >= 100)     return fullBar;
