@@ -202,8 +202,12 @@ public class Window extends JFrame{
 		action4.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
-				repaintMainContent(bathroom);	
-				bathroom.takeBath();
+				
+				if(statusH.checkCurrentStatus(3)) {
+					repaintMainContent(bathroom);	
+					bathroom.takeBath();
+				}
+				
 
 			}
 		});
@@ -218,6 +222,7 @@ public class Window extends JFrame{
 			public void actionPerformed(ActionEvent event) {
 				
 				statusH.updateSleep();
+				statusH.checkCurrentStatus(2);
 				if(indoor.checkIsSleeping()) {
 					
 					indoor.wakeSprite();
@@ -250,23 +255,26 @@ public class Window extends JFrame{
 	}
 	
 	private void refreshBars() {
-//		if(statusHandler.checkIsAlive()) {
-//			return;
-//		} else {
-//			
-//			spriteDie();
-//			
-//		}
 		
 	    happinessLabel.setIcon(statusH.getIconFor(statusH.getHappinessValue()));
 	    hungerLabel.setIcon(statusH.getIconFor(statusH.getHungerValue()));
 	    energyLabel.setIcon(statusH.getIconFor(statusH.getEnergyValue()));
 	    cleanLabel.setIcon(statusH.getIconFor(statusH.getCleanValue()));
+		
+		if(statusHandler.checkIsAlive()) {
+			return;
+		} else {
+			
+			spriteDie();
+			
+		}
+	    
+	    
 	}
+	
+	
 
 	private void startRefreshTimer() {
-		
-		
 		
 	    refreshTimer = new Timer(3000, e -> refreshBars());
 	    refreshTimer.start();

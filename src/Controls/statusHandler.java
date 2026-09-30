@@ -70,6 +70,7 @@ public class statusHandler{
 				} else {
 				
 					System.out.print("is sleeping");
+					isSleeping = true;
 					statusValid = isSleeping;
 					
 				}
@@ -81,7 +82,8 @@ public class statusHandler{
 					System.out.print("cannot bathe");
 					
 				} else {
-					
+					isBathing = true;
+					statusValid = isBathing;
 					System.out.print("bathing");
 					
 				}
@@ -133,7 +135,6 @@ public class statusHandler{
 	
 	public void updateClean(){
 		
-		isBathing = true;
 		batheTimer = new Timer(3000, e ->{
 			
 			clean = 100;
@@ -159,6 +160,14 @@ public class statusHandler{
 		eatTimer.stop();
 		
 	}
+	
+	public static void updateHappiness(){happiness = 100;}
+	
+	public static void depleteHunger() {hunger -= 20;}
+	
+	public static void depletenergy() {energy -= 20;}
+	
+	public static void depleteClean() {clean -= 20;}
 	
 	public static boolean checkIsAlive() { return isAlive; }
 	
