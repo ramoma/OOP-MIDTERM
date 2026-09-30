@@ -31,6 +31,8 @@ public class gameOver extends JFrame{
 	
 	private static JPanel buttonsPanel;
 	
+//	private static Window window = new Window();
+	
 	private static JPanel panel = new JPanel() {
 		
 		@Override
@@ -67,6 +69,7 @@ public class gameOver extends JFrame{
 			
 			public void actionPerformed(ActionEvent e) {
 				
+				statusH.setReset();
 				dispose();
 				
 			}

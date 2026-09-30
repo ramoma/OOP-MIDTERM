@@ -284,6 +284,15 @@ public class Window extends JFrame{
 	    
 	}
 	
+	public void restart() {
+
+		dispose();
+	    refreshBars();
+	    statusH.startHandler();   
+	    setVisible(true);
+	    
+	}
+	
 
 	private void startRefreshTimer() {
 		
@@ -309,6 +318,7 @@ public class Window extends JFrame{
 		
 		indoor.killSprite();
 		indoor.mist();
+		
 		refreshTimer.stop();
 		
 	}

@@ -93,6 +93,8 @@ public class nameSprite extends JFrame{
 					isNamed = true;
 					System.out.print(spriteName);
 					db.initSprite(spriteName);
+					
+					
 					dispose();
 					
 				}

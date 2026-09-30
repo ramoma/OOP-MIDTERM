@@ -226,7 +226,7 @@ public class statusHandler{
 				if(name.returnSprite()) {
 					continue;
 				} else {
-					return;
+					System.out.print("name is empty");
 				}
 			}
 				
