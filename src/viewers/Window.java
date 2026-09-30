@@ -68,7 +68,6 @@ public class Window extends JFrame{
 		setLayout(new BorderLayout());
 		setIconImage(icon);
 		setLocationRelativeTo(null);
-		setUndecorated(true);
 		
 		statusH.setStatus();
 		statusH.startHandler();
@@ -308,6 +307,8 @@ public class Window extends JFrame{
 		
 		popUP = new gameOver();
 		
+		indoor.killSprite();
+		indoor.mist();
 		refreshTimer.stop();
 		
 	}

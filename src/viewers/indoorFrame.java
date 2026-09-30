@@ -24,7 +24,9 @@ public class indoorFrame extends JPanel{
 	
 	private static Image background = new ImageIcon(outdoorFrame.class.getResource("/backgrounds/indoors.gif")).getImage();
 	private static Image bread = new ImageIcon(outdoorFrame.class.getResource("/sprites/food/bread.png")).getImage();
+	
 	private static JPanel lightOff = new JPanel();
+	private static JPanel dead = new JPanel();
 	
 	private static Timer eatTimer;
 	private static Timer sleepTimer;
@@ -59,7 +61,7 @@ public class indoorFrame extends JPanel{
 	public void sleep(){
 		
 		isSleeping = true;
-		lightOff.setSize(new Dimension(533,533));
+		lightOff.setSize(new Dimension(533,553));
 		lightOff.setBackground(new Color(0f,0f,0f,.5f));
 		
 		add(lightOff);
@@ -72,6 +74,16 @@ public class indoorFrame extends JPanel{
 		
 		isSleeping = false;
 		reDraw(lightOff);
+		
+	}
+	
+	public void mist() {
+		
+		dead.setBackground(new Color(.39f,0f,0f,.5f));
+		dead.setSize(new Dimension(533,540));
+		add(dead);
+		revalidate();
+		repaint();
 		
 	}
 	
@@ -107,6 +119,7 @@ public class indoorFrame extends JPanel{
 			
 		} else if (!isAlive) {
 			
+//			mist();
 			g2D.drawImage(deadSprite, 50,400,this);
 			
 		}

@@ -68,7 +68,6 @@ public class gameOver extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				
 				dispose();
-				statusH.initSprite();
 				
 			}
 			
