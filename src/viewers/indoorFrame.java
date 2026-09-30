@@ -7,7 +7,9 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import Controls.statusHandler;
 
@@ -15,16 +17,27 @@ public class indoorFrame extends JPanel{
 	
 	private static Image awakeSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/idle.gif")).getImage();
 	private static Image sleepingSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/sleeping.png")).getImage();
+	private static Image happySprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/happy.png")).getImage();
+	private static Image deadSprite = new ImageIcon(outdoorFrame.class.getResource("/sprites/dead.png")).getImage();
+	
+	private static boolean isAlive = true;
+	
 	private static Image background = new ImageIcon(outdoorFrame.class.getResource("/backgrounds/indoors.gif")).getImage();
+	private static Image bread = new ImageIcon(outdoorFrame.class.getResource("/sprites/food/bread.png")).getImage();
+	
 	private static JPanel lightOff = new JPanel();
+	private static JPanel dead = new JPanel();
+	
+	private static Timer eatTimer;
+	private static Timer sleepTimer;
+	
 	private static statusHandler statusH = new statusHandler();
 	
 	private static boolean isSleeping = false;
+	private static boolean isEating = false;
 	
-	
-	indoorFrame(){
+	public indoorFrame(){
 		
-		JPanel mainContent = new JPanel();
 		setLayout(null);
 		
 		setPreferredSize(new Dimension(412, 553));
@@ -34,17 +47,26 @@ public class indoorFrame extends JPanel{
 	
 	public void eat() {
 		
+		isEating = true;
 		
+		eatTimer = new Timer(3000, e ->{
+
+			isEating = false;
+		});
+		eatTimer.setRepeats(false);
+		eatTimer.start();
 		
 	}
 	
 	public void sleep(){
 		
 		isSleeping = true;
-		lightOff.setSize(new Dimension(533,533));
+		lightOff.setSize(new Dimension(533,553));
 		lightOff.setBackground(new Color(0f,0f,0f,.5f));
 		
 		add(lightOff);
+		revalidate();
+		repaint();
 		
 	}
 	
@@ -55,11 +77,21 @@ public class indoorFrame extends JPanel{
 		
 	}
 	
-	public boolean checkIsSleeping() {
+	public void mist() {
 		
-		return isSleeping;
+		dead.setBackground(new Color(.39f,0f,0f,.5f));
+		dead.setSize(new Dimension(533,540));
+		add(dead);
+		revalidate();
+		repaint();
 		
 	}
+	
+	public void killSprite() {isAlive = false;}
+	
+	public boolean checkIsSleeping() {return isSleeping;}
+	
+	public boolean checkIsEating() {return isEating;}
 	
 	public void reDraw(JPanel panel) {
 		
@@ -74,12 +106,25 @@ public class indoorFrame extends JPanel{
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D) g;
 		
-		g2D.drawImage(background, 0,0,this);	
-		if(isSleeping) {
+		g2D.drawImage(background, 0,0,this);
+		
+		if (isSleeping) {
 			
 			g2D.drawImage(sleepingSprite,50,400, this);
 			
-		}else {
+		} else if (isEating) {
+
+			g2D.drawImage(happySprite, 50,400,this);
+			g2D.drawImage(bread, 160,400,this);
+			
+		} else if (!isAlive) {
+			
+//			mist();
+			g2D.drawImage(deadSprite, 50,400,this);
+			
+		}
+		
+		else {
 			
 			g2D.drawImage(awakeSprite, 50,400,this);
 			

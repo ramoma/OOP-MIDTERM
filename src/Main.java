@@ -1,33 +1,31 @@
-import viewers.Window;
+
+
+import Controls.statusHandler;
+import viewers.gameOver;
+import viewers.nameSprite;
 import Controls.dbController;
 
 import javax.swing.JOptionPane;
 
 
+
 public class Main {
+	
+	private static dbController db = new dbController();
+	private static statusHandler statusH = new statusHandler();
 	
 	public static void main(String[] args) {
 		
-		dbController db = new dbController();
+//		nameSprite name = new nameSprite();
+//		gameOver frame = new gameOver();
+//		frame.setVisible(true);
+		statusH.initSprite();
+		dbController.checkSpriteAlive();
 		
-		if(db.checkChar()) {
-			
-			Window window = new Window();
-			
-		} else {
-			String spriteName = JOptionPane.showInputDialog(null, "enter your sprites name");
 		
-			while(spriteName.isEmpty()) {
-				
-				spriteName = JOptionPane.showInputDialog(null, "Name must not be empty");
-			}
 		
-			
-			db.initSprite(spriteName);
-			
-		
-			Window window = new Window();
-		}
 	}
+	
+
 	
 }

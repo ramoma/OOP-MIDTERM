@@ -2,6 +2,7 @@ package Controls;
 
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
 
 public class dbController {
 	
@@ -12,14 +13,19 @@ public class dbController {
 	private static int happiness;
 	private static int energy;
 	private static int clean;
+	private static boolean isAlive;
+	
+	private static LocalDate currentDate;
 	
 	private static int[] stats = new int[4];
 
-	String dbUrl = "jdbc:sqlite:valuesStorage/values";
+	private static String dbUrl = "jdbc:sqlite:valuesStorage/values";
 	
 	public boolean checkChar() {
 		
-		
+//		if(!hasSave) {
+//			killSprite();
+//		}
 		
 		try {
 			
@@ -95,7 +101,7 @@ public class dbController {
 			
 			Connection db = DriverManager.getConnection(dbUrl);
 			
-			PreparedStatement stmt = db.prepareStatement("insert into spriteValues(name, hunger, happiness, energy, clean) values(?,100,100,100,100)");
+			PreparedStatement stmt = db.prepareStatement("insert into spriteValues(name, hunger, happiness, energy, clean, aliveDate) values(?,100,100,100,100,date())");
 			
 			stmt.setString(1, name);
 			stmt.executeUpdate();
@@ -109,13 +115,60 @@ public class dbController {
 		}
 	}
 	
-	public void updateSprite(int hunger, int happiness, int energy, int clean) {
+	public static void checkSpriteAlive() {
 		
-try {
+		currentDate = LocalDate.now();
+		String formattedDate = currentDate.toString();
+
+		try {
+			
+			Connection db  = DriverManager.getConnection(dbUrl);
+			PreparedStatement stmt = db.prepareStatement("select aliveDate from spriteValues");
+			
+			ResultSet res = stmt.executeQuery();
+			
+			String storedDate = res.getString("aliveDate");
+			db.close();
+			
+			if(!formattedDate.equals(storedDate)) {
+				
+				killSprite();
+				
+			}
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			
+		}
+		
+	}
+	
+	public static void killSprite() {
+		
+		try {
 			
 			Connection db = DriverManager.getConnection(dbUrl);
 			
-			PreparedStatement stmt = db.prepareStatement("insert into spriteValues(hunger, happiness, energy, clean) values(?,?,?,?)");
+			PreparedStatement stmt = db.prepareStatement("delete from spriteValues");
+			
+			stmt.executeUpdate();
+			db.close();
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void updateSprite(int hunger, int happiness, int energy, int clean) {
+		
+		try {
+			
+			Connection db = DriverManager.getConnection(dbUrl);
+			
+			PreparedStatement stmt = db.prepareStatement("update spriteValues set hunger = ?, happiness = ?, energy = ?, clean = ?, aliveDate = date()");
 			
 			stmt.setInt(1, hunger);
 			stmt.setInt(2, happiness);

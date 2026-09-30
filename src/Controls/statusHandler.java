@@ -2,8 +2,12 @@ package Controls;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
+import viewers.Window;
+import viewers.indoorFrame;
+import viewers.nameSprite;
 
 import java.util.Random;
 
@@ -11,19 +15,27 @@ import java.util.Random;
 public class statusHandler{
 	
 	private static boolean isAlive = true;
-	private static boolean isAsleep = false;
+	private static boolean isSleeping = true;
+	private static boolean isEating = true;
+	private static boolean isBathing = true;
+	private static boolean isPlaying = true;
+	private static boolean action;
+	private static boolean reset;
+	
 	private static int hunger;
 	private static int happiness;
 	private static int energy;
 	private static int clean;
+	
 	private static Timer timer;
+	private static Timer batheTimer;
 	private static Timer sleepTimer;
+	private static Timer eatTimer;
+	
 	private static dbController db = new dbController();
 	
-	private static ImageIcon currentStateHunger;
-	private static ImageIcon currentStateHappiness;
-	private static ImageIcon currentStateClean;
-	private static ImageIcon currentStateEnergy;
+//	private static nameSprite name;
+
 	
 	private static ImageIcon fullBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/100_.png"));
 	private static ImageIcon quarterBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/75_.png"));
@@ -32,9 +44,45 @@ public class statusHandler{
 	private static ImageIcon depletedBar = new ImageIcon(statusHandler.class.getResource("/sprites/status/Low_.png"));
 	
 	public void startHandler(){
-//180000
-		timer = new Timer(3000, e ->depleteStats());
+		
+		//180000
+		timer = new Timer(5000, e ->depleteStats());
 		timer.start();
+		
+	}
+	
+	public boolean getValid(int stat) {
+		
+		switch(stat) {
+		
+			case 1:
+				System.out.print(isSleeping);
+				System.out.print(isBathing);
+				
+				action = isEating;
+				break;
+			case 2:
+				System.out.print(isEating);
+				System.out.print(isBathing);
+				action = isSleeping;
+				break;
+			case 3:
+				System.out.print(isSleeping);
+				System.out.print(isEating);
+				action = isBathing;
+				break;
+				
+			case 4:
+				isBathing = false;
+				isEating = false;
+				isSleeping = false;
+				
+				action = isPlaying;
+				break;
+		
+		}
+		
+		return action;
 		
 	}
 	
@@ -51,33 +99,89 @@ public class statusHandler{
 		
 	}
 	
-	public void updateSleep(boolean isAsleep){
+	public void updateSleep(){
 		
-		System.out.println("penis");
-		if(isAsleep) {
+		if(isSleeping) {
 			
-			sleepTimer = new Timer(180000, e-> {
+			isBathing = false;
+			isEating = false;
+			
+			sleepTimer = new Timer(3000, e-> {
+				
 				energy = 100;
+				
+				isBathing = true;
+				isEating = true;
+				
 			});
 			
-			sleepTimer.start();			
-		} else {
-			
-			sleepTimer.stop();
+			sleepTimer.setRepeats(false);
+			sleepTimer.start();	
 			
 		}
+				
+	}
+	
+	public void InterruptSleep() {
+		
+		sleepTimer.stop();
+		isBathing = true;
+		isEating = true;
 		
 	}
 	
-	public boolean die() {
+	public void updateClean(){
 		
-		if(timer != null) {
-			timer.stop();
+		
+		if(isBathing) {
+			isEating = false;
+			isSleeping = false;
+			
+			batheTimer = new Timer(3000, e ->{
+				
+				clean = 100;
+				isEating = true;
+				isSleeping = true;
+				
+			});
+			batheTimer.setRepeats(false);
+			batheTimer.start();
 		}
-		
-		return false;
+	}
+	
+	public static void updatehunger(){ 
+
+		if(isEating) {
+			
+			isBathing = false;
+			isSleeping = false;
+			
+			eatTimer = new Timer(3000, e ->{
+				
+				hunger = 100;
+				isBathing = true;
+				isSleeping = true;
+				
+			});
+			
+			eatTimer.start();
+			eatTimer.setRepeats(false);
+//			eatTimer.stop();
+			
+		}
+			
 		
 	}
+	
+	public static void updateHappiness(){happiness = 100;}
+	
+	public static void depleteHunger() {hunger -= 20;}
+	
+	public static void depletenergy() {energy -= 20;}
+	
+	public static void depleteClean() {clean -= 20;}
+	
+	public static boolean checkIsAlive() { return isAlive; }
 	
 	public void depleteStats() {
 		
@@ -91,101 +195,69 @@ public class statusHandler{
 			spec2 = rand.nextInt(0,8);
 			spec3 = rand.nextInt(0,8);
 			
-			hunger -= spec1;
-			happiness -= spec;
-			energy -= spec3;
-			clean -= spec2;
-		
-			System.out.println(currentStateHappiness);
+			hunger = Math.max(0, hunger - spec1);
+			happiness = Math.max(0, happiness - spec);
+			energy = Math.max(0, energy - spec3);
+			clean = Math.max(0, clean - spec2);
+			
+			System.out.println("penits");
 			System.out.println(hunger);
 			System.out.println(happiness);
-			System.out.println(energy);
 			System.out.println(clean);
+			System.out.println(energy);
 			
 		} else {
 			
-			die();
+			isAlive = false;
 			
 		}
 	}
 	
-	
-	
-	public JLabel getHappiness() {
+	public static void initSprite() {
 		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
+		if(db.checkChar()) {
 			
-			currentStateHappiness = fullBar;
-
-		} else if(happiness <=75) {
+			Window window = new Window();
 			
-			currentStateHappiness = quarterBar;
+		} else {
+			nameSprite name = new nameSprite();
 			
+			while(!name.returnSprite()) {
+				if(name.returnSprite()) {
+					continue;
+				} else {
+					System.out.print("name is empty");
+				}
+			}
+				
+			
+			Window window = new Window();
 		}
-		panel.setIcon(currentStateHappiness);
-		
-		return panel;
 		
 	}
 	
-	public JLabel getHunger() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
-
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		System.out.print(currentStateHappiness);
-		
-		return panel;
-		
+	public void unsetPlaying() {
+		isBathing = true;
+		isEating = true;
+		isSleeping = true;
 	}
-
-	public JLabel getEnergy() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
 	
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		return panel;
-		
+	public void setReset() {reset = true;}
+	public boolean getReset() {return reset;}
+	public void unsetReset() {reset = false;}
+	
+	
+	public ImageIcon getIconFor(int value) {
+	    if (value >= 100)     return fullBar;
+	    else if (value >= 75) return quarterBar;
+	    else if (value >= 50) return halfBar;
+	    else if (value >= 30) return lowBar;
+	    else                  return depletedBar;
 	}
 
-	public JLabel getClean() {
-		
-		
-		JLabel panel = new JLabel();
-		panel.setSize(100,50);
-		
-		if (happiness == 100) {
-			
-			currentStateHappiness = fullBar;
-	
-		}
-		panel.setIcon(currentStateHappiness);
-		
-		System.out.print(currentStateHappiness);
-		
-		return panel;
-		
-	}
-	
+	public int getHappinessValue() { return happiness; }	
+	public int getHungerValue() { return hunger; }
+	public int getEnergyValue() { return energy; }
+	public int getCleanValue() { return clean; }
 	
 }
