@@ -120,7 +120,7 @@ public class outdoorFrame extends JPanel implements Runnable{
 	    spawnCounter++;
 	    if (spawnCounter >= SPAWN_INTERVAL) {
 	        spawnCounter = 0;
-	        int x = rand.nextInt(getWidth() - 32); // 32 = object width
+	        int x = rand.nextInt(getWidth() - 62);
 	        fallingObjects.add(new FallingObject(x, 0, 32, 32, images[i]));
 	    }
 
@@ -184,7 +184,6 @@ public class outdoorFrame extends JPanel implements Runnable{
 				nextDrawTime += drawInterval;
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

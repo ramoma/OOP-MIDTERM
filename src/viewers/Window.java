@@ -96,13 +96,19 @@ public class Window extends JFrame{
 		action1.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {
 				
-				statusH.unsetPlaying();
-				if(outdoor.getThread() != null) {
-					
-					outdoor.endThread();
-				}
+				if(statusH.checkIsAlive()) {
 				
-				repaintMainContent(indoor);
+					statusH.unsetPlaying();
+					if(outdoor.getThread() != null) {
+						
+						outdoor.endThread();
+					}
+					
+					repaintMainContent(indoor);
+				}
+				else {
+					return;
+				}
 			}
 		});
 		
@@ -177,10 +183,12 @@ public class Window extends JFrame{
 		action2.setFocusable(false);
 		action2.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent event) {		
-				
-				statusH.getValid(4);
-				outdoor.startThread();
-				repaintMainContent(outdoor);
+				if(statusH.checkIsAlive()) {
+					statusH.getValid(4);
+					outdoor.startThread();
+					repaintMainContent(outdoor);
+				}
+					
 					
 			}
 		});
@@ -195,7 +203,7 @@ public class Window extends JFrame{
 		action3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 	
-				if(statusH.getValid(1)) {
+				if(statusH.getValid(1) && statusH.checkIsAlive()) {
 					repaintMainContent(indoor);
 					indoor.eat();
 					statusHandler.updatehunger();
@@ -216,7 +224,7 @@ public class Window extends JFrame{
 			public void actionPerformed(ActionEvent event) {
 				
 				
-				if(statusH.getValid(3)) {
+				if(statusH.getValid(3) && statusH.checkIsAlive()) {
 					repaintMainContent(bathroom);	
 					bathroom.takeBath();
 					statusH.updateClean();
@@ -315,6 +323,8 @@ public class Window extends JFrame{
 		dbController.killSprite();
 		
 		popUP = new gameOver();
+		
+		repaintMainContent(indoor);
 		
 		indoor.killSprite();
 		indoor.mist();
